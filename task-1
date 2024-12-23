@@ -1,0 +1,92 @@
+-- in this task to create library management system,first we need to create a databse 
+called library--
+
+CREATE DATABASE library;
+
+--for using the database we use below command--
+
+USE library;
+
+--in library database, we created a table named books consists of different 
+colomn headings and their datatypes with constraints like book_id int etc.--
+
+CREATE TABLE books (
+    book_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    genre VARCHAR(100),
+    publication_year INT,
+    copies_available INT DEFAULT 1
+);
+
+--we create another table as we know taht names mentioned in the task named members consists of different 
+colomn headings and their datatypes with constraints like member_id int etc.--
+
+CREATE TABLE members (
+    member_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(15)
+);
+
+--at final we create table named transaction in the database which consisting of
+colomn headings and their datatypes with constraints like transaction_id int etc.--
+
+
+CREATE TABLE transactions (
+    transaction_id INT AUTO_INCREMENT PRIMARY KEY,
+    book_id INT,
+    member_id INT,
+    borrow_date DATE,
+    return_date DATE,
+    FOREIGN KEY (book_id) REFERENCES books(book_id),
+    FOREIGN KEY (member_id) REFERENCES members(member_id)
+);
+
+-- after creating the tables we need to insert the data into empty tables to store the data--
+--for inserting data we use below query syntax to insert data in a above created tables--
+
+INSERT INTO books (title, author, genre, publication_year, copies_available)
+VALUES ('The Great Gatsby', 'F. Scott Fitzgerald', 'Fiction', 1925, 3),
+       ('To Kill a Mockingbird', 'Harper Lee', 'Fiction', 1960, 2);
+
+INSERT INTO members (name, email, phone_number)
+VALUES ('John Doe', 'john.doe@example.com', '123-456-7890'),
+       ('Jane Smith', 'jane.smith@example.com', '098-765-4321');
+
+INSERT INTO transactions (book_id, member_id, borrow_date, return_date)
+VALUES (1, 1, '2024-12-01', NULL),
+       (2, 2, '2024-12-05', '2024-12-20');
+
+--for updating the data in tables we use below syntax--
+
+UPDATE books SET copies_available = 4 WHERE book_id = 1;
+UPDATE members SET email = 'john.newemail@example.com' WHERE member_id = 1;
+UPDATE transactions SET return_date = '2024-12-21' WHERE transaction_id = 1;
+
+--for deleting the data we use below syntax--
+
+DELETE FROM books WHERE book_id = 1;
+DELETE FROM members WHERE member_id = 2;
+DELETE FROM transactions WHERE transaction_id = 2;
+
+--for getting the data that is stored in tables we use below syntax--
+
+SELECT * FROM books;
+SELECT * FROM members;
+SELECT * FROM transactions;
+
+--for getting the books boorwed by a specific member we use below syntax--
+
+SELECT b.title, t.borrow_date, t.return_date
+FROM transactions t
+JOIN books b ON t.book_id = b.book_id
+WHERE t.member_id = 1;
+
+-- for getting members who borrowed a specific book we use below syntax--
+
+SELECT m.name, t.borrow_date, t.return_date
+FROM transactions t
+JOIN members m ON t.member_id = m.member_id
+WHERE t.book_id = 1;
+
